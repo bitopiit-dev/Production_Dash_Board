@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baridhi Garments Limited - Sewing Floor Dashboard</title>
-  <!-- Tailwind CSS & Chart.js CDN -->
+  <title>Baridhi Garments Limited - Live Sewing Floor Dashboard</title>
+  <!-- Tailwind CSS & Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -24,10 +24,10 @@
     .neon-text-rose { text-shadow: 0 0 12px rgba(244, 63, 94, 0.5); }
   </style>
 </head>
-<body class="p-3 md:p-6 min-h-screen flex flex-col justify-between">
+<body class="p-3 md:p-5 min-h-screen flex flex-col justify-between">
 
   <!-- TOP HEADER -->
-  <header class="kpi-card rounded-xl p-3 md:p-4 mb-4 flex flex-col md:flex-row justify-between items-center gap-3 border-sky-500/30">
+  <header class="kpi-card rounded-xl p-3 md:p-4 mb-3 flex flex-col md:flex-row justify-between items-center gap-3 border-sky-500/30">
     <div class="flex items-center gap-3">
       <div class="bg-sky-500/20 p-2.5 rounded-lg border border-sky-400/40">
         <svg class="w-7 h-7 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,8 +48,15 @@
       <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> দায়িত্ববোধ</span>
     </div>
 
-    <!-- Line Switcher & Live Clock -->
+    <!-- Visible 60s Countdown Timer, Line Selector & Live Clock -->
     <div class="flex items-center gap-3">
+      <!-- Sync Status & Countdown Timer (59s to 00s) -->
+      <div id="syncBadge" class="flex items-center gap-2 bg-emerald-950/80 border border-emerald-600/50 text-emerald-400 text-xs px-3 py-1.5 rounded-lg font-mono">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="syncText">Syncing...</span>
+        <span id="countdownTimer" class="bg-emerald-900/60 text-emerald-300 px-1.5 py-0.5 rounded text-[11px] font-bold border border-emerald-700">60s</span>
+      </div>
+
       <div class="flex items-center gap-2 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg">
         <label for="lineSelect" class="text-xs text-slate-400 font-semibold">Line:</label>
         <select id="lineSelect" onchange="onLineChange(this.value)" class="bg-transparent text-sm font-bold text-sky-400 focus:outline-none cursor-pointer">
@@ -63,47 +70,41 @@
   </header>
 
   <!-- TOP KPI METRICS GRID -->
-  <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-    <!-- Line & Run Day -->
+  <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-3">
     <div class="kpi-card p-3 rounded-xl border-sky-500/30">
       <span class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Line / Run Day</span>
-      <div class="text-xl font-extrabold text-sky-400 mt-1" id="kpiLine">Line 17</div>
-      <div class="text-xs text-slate-400 mt-0.5">Run Days: <span class="text-emerald-400 font-bold" id="kpiRunDay">18</span></div>
+      <div class="text-xl font-extrabold text-sky-400 mt-1" id="kpiLine">Line --</div>
+      <div class="text-xs text-slate-400 mt-0.5">Run Days: <span class="text-emerald-400 font-bold" id="kpiRunDay">--</span></div>
     </div>
-    <!-- Buyer & Style -->
     <div class="kpi-card p-3 rounded-xl border-sky-500/30">
       <span class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Buyer / Style</span>
-      <div class="text-xl font-extrabold text-white mt-1" id="kpiBuyer">H&M</div>
-      <div class="text-xs text-sky-300 font-semibold truncate" id="kpiStyle">Alexandra</div>
+      <div class="text-xl font-extrabold text-white mt-1" id="kpiBuyer">--</div>
+      <div class="text-xs text-sky-300 font-semibold truncate" id="kpiStyle">--</div>
     </div>
-    <!-- Target Overview -->
     <div class="kpi-card p-3 rounded-xl border-emerald-500/30">
-      <span class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">OB / Today's Target</span>
-      <div class="text-xl font-extrabold text-emerald-400 mt-1 neon-text-green" id="kpiDailyTarget">459 <span class="text-xs font-normal text-slate-400">pcs</span></div>
-      <div class="text-xs text-slate-400 mt-0.5">OB Target: <span class="text-slate-300 font-bold" id="kpiOB">667</span></div>
+      <span class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Today Target / OB</span>
+      <div class="text-xl font-extrabold text-emerald-400 mt-1 neon-text-green" id="kpiDailyTarget">-- <span class="text-xs font-normal text-slate-400">pcs</span></div>
+      <div class="text-xs text-slate-400 mt-0.5">OB Target: <span class="text-slate-300 font-bold" id="kpiOB">--</span></div>
     </div>
-    <!-- Hourly Target -->
     <div class="kpi-card p-3 rounded-xl border-emerald-500/30">
       <span class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Hourly Target</span>
-      <div class="text-xl font-extrabold text-emerald-300 mt-1" id="kpiHourlyTarget">46 <span class="text-xs font-normal text-slate-400">pcs/hr</span></div>
-      <div class="text-xs text-slate-400 mt-0.5">Pacing: <span class="text-emerald-400 font-bold">Standard</span></div>
+      <div class="text-xl font-extrabold text-emerald-300 mt-1" id="kpiHourlyTarget">-- <span class="text-xs font-normal text-slate-400">pcs/hr</span></div>
+      <div class="text-xs text-slate-400 mt-0.5">Standard Pace</div>
     </div>
-    <!-- Efficiencies -->
     <div class="kpi-card p-3 rounded-xl border-amber-500/30">
       <span class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Efficiency (Yest / MTD)</span>
-      <div class="text-xl font-extrabold text-amber-400 mt-1" id="kpiYestEff">66.1%</div>
-      <div class="text-xs text-slate-400 mt-0.5">MTD: <span class="text-amber-300 font-bold" id="kpiMtdEff">51.1%</span> | L.M: <span class="text-slate-300">59.1%</span></div>
+      <div class="text-xl font-extrabold text-amber-400 mt-1" id="kpiYestEff">--%</div>
+      <div class="text-xs text-slate-400 mt-0.5">MTD: <span class="text-amber-300 font-bold" id="kpiMtdEff">--%</span></div>
     </div>
-    <!-- Last Day Achievement -->
     <div class="kpi-card p-3 rounded-xl border-indigo-500/30">
       <span class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Last Day Output</span>
-      <div class="text-xl font-extrabold text-indigo-300 mt-1" id="kpiLastAchieve">565 <span class="text-xs font-normal text-slate-400">pcs</span></div>
-      <div class="text-xs text-emerald-400 font-bold mt-0.5">102.5% Achieved</div>
+      <div class="text-xl font-extrabold text-indigo-300 mt-1" id="kpiLastAchieve">-- <span class="text-xs font-normal text-slate-400">pcs</span></div>
+      <div class="text-xs text-slate-400 mt-0.5">Forecast: <span class="text-slate-300 font-bold" id="kpiLastForecast">--</span></div>
     </div>
   </section>
 
-  <!-- MAIN BODY: HOURLY TABLE & QUALITY METRICS -->
-  <main class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4 flex-grow">
+  <!-- MAIN SECTION: HOURLY TABLE & QUALITY -->
+  <main class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-3 flex-grow">
     
     <!-- LEFT 2 COLUMNS: Hourly Production Log -->
     <div class="lg:col-span-2 kpi-card p-4 rounded-xl flex flex-col justify-between border-slate-800">
@@ -113,7 +114,7 @@
             <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
             <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wide">ঘণ্টাভিত্তিক প্রোডাকশন ট্র্যাকিং (Hourly Output Log)</h2>
           </div>
-          <span class="text-xs text-slate-400">Total Achieved: <strong class="text-emerald-400 text-sm font-bold" id="totalOutput">103</strong> / 459 pcs</span>
+          <span class="text-xs text-slate-400">Total Achieved: <strong class="text-emerald-400 text-sm font-bold" id="totalOutput">0</strong> pcs</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -130,13 +131,13 @@
               </tr>
             </thead>
             <tbody id="hourlyTableBody" class="divide-y divide-slate-800/60 font-medium">
-              <!-- Dynamically populated rows -->
+              <tr><td colspan="7" class="py-4 text-center text-slate-500">Connecting to Google Sheet...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Production Trend Bar Chart -->
+      <!-- Hourly Production Bar Chart -->
       <div class="mt-4 pt-3 border-t border-slate-800">
         <div class="h-28 w-full">
           <canvas id="hourlyTrendChart"></canvas>
@@ -144,72 +145,74 @@
       </div>
     </div>
 
-    <!-- RIGHT 1 COLUMN: Quality, Top Defects & Audit -->
-    <div class="flex flex-col gap-4">
+    <!-- RIGHT 1 COLUMN: Quality, Top Defects & Lot Audit -->
+    <div class="flex flex-col gap-3">
       
       <!-- Quality KPI Tiles -->
-      <div class="kpi-card p-4 rounded-xl border-slate-800">
-        <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center justify-between">
+      <div class="kpi-card p-3.5 rounded-xl border-slate-800">
+        <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2.5 flex items-center justify-between">
           <span>কোয়ালিটি প্যারামিটার (Quality Status)</span>
           <span class="text-[10px] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">Live</span>
         </h2>
-        <div class="grid grid-cols-2 gap-2.5">
-          <div class="bg-slate-900/80 p-2.5 rounded-lg border border-emerald-500/20 text-center">
-            <span class="text-[10px] text-slate-400">DHU% (Target &lt;5%)</span>
-            <div class="text-lg font-bold text-emerald-400 mt-0.5" id="valDHU">4.66%</div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-slate-900/80 p-2 rounded-lg border border-emerald-500/20 text-center">
+            <span class="text-[10px] text-slate-400">DHU% (Tgt &lt;5%)</span>
+            <div class="text-base font-bold text-emerald-400 mt-0.5" id="valDHU">--</div>
           </div>
-          <div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-500/30 text-center">
-            <span class="text-[10px] text-slate-400">DR% (Target &lt;3%)</span>
-            <div class="text-lg font-bold text-rose-400 mt-0.5 neon-text-rose" id="valDR">4.81% ⚠️</div>
+          <div class="bg-slate-900/80 p-2 rounded-lg border border-rose-500/30 text-center">
+            <span class="text-[10px] text-slate-400">DR% (Tgt &lt;3%)</span>
+            <div class="text-base font-bold text-rose-400 mt-0.5 neon-text-rose" id="valDR">--</div>
           </div>
-          <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-700/60 text-center">
-            <span class="text-[10px] text-slate-400">NCR% (Target 10%)</span>
-            <div class="text-lg font-bold text-sky-400 mt-0.5" id="valNCR">9.80%</div>
+          <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-700/60 text-center">
+            <span class="text-[10px] text-slate-400">NCR% (Tgt 10%)</span>
+            <div class="text-base font-bold text-sky-400 mt-0.5" id="valNCR">--</div>
           </div>
-          <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-700/60 text-center">
-            <span class="text-[10px] text-slate-400">BR% (Target 5%)</span>
-            <div class="text-lg font-bold text-slate-300 mt-0.5" id="valBR">0.00%</div>
+          <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-700/60 text-center">
+            <span class="text-[10px] text-slate-400">BR% (Tgt 5%)</span>
+            <div class="text-base font-bold text-slate-300 mt-0.5" id="valBR">--</div>
           </div>
         </div>
       </div>
 
-      <!-- Top 3 Defects & Donut Breakdown -->
-      <div class="kpi-card p-4 rounded-xl border-slate-800 flex-grow flex flex-col justify-between">
+      <!-- Top 3 Defects -->
+      <div class="kpi-card p-3.5 rounded-xl border-slate-800 flex-grow flex flex-col justify-between">
         <div>
           <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">শীর্ষ ত্রুটি (Top 3 Defects)</h2>
-          <div class="space-y-2 mb-3">
-            <div class="flex justify-between items-center bg-slate-900/70 px-3 py-2 rounded-lg border border-rose-500/20">
-              <span class="text-xs text-slate-200">1. Puckering (কুঁচকে যাওয়া)</span>
-              <span class="text-[11px] font-bold text-rose-400 bg-rose-950/50 px-2 py-0.5 rounded border border-rose-800">Critical</span>
+          <div class="space-y-1.5 mb-2.5" id="defectsContainer">
+            <div class="flex justify-between items-center bg-slate-900/70 px-2.5 py-1.5 rounded-lg border border-rose-500/20">
+              <span class="text-xs text-slate-200" id="defect1">1. Puckering</span>
+              <span class="text-[10px] font-bold text-rose-400 bg-rose-950/50 px-2 py-0.5 rounded border border-rose-800">Critical</span>
             </div>
-            <div class="flex justify-between items-center bg-slate-900/70 px-3 py-2 rounded-lg border border-amber-500/20">
-              <span class="text-xs text-slate-200">2. Skip Stitch</span>
-              <span class="text-[11px] font-bold text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800">Medium</span>
+            <div class="flex justify-between items-center bg-slate-900/70 px-2.5 py-1.5 rounded-lg border border-amber-500/20">
+              <span class="text-xs text-slate-200" id="defect2">2. Skip Stitch</span>
+              <span class="text-[10px] font-bold text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800">Medium</span>
             </div>
-            <div class="flex justify-between items-center bg-slate-900/70 px-3 py-2 rounded-lg border border-slate-700/40">
-              <span class="text-xs text-slate-200">3. Pleat Defect</span>
-              <span class="text-[11px] font-bold text-sky-400 bg-sky-950/50 px-2 py-0.5 rounded border border-sky-800">Monitored</span>
+            <div class="flex justify-between items-center bg-slate-900/70 px-2.5 py-1.5 rounded-lg border border-slate-700/40">
+              <span class="text-xs text-slate-200" id="defect3">3. Pleat Defect</span>
+              <span class="text-[10px] font-bold text-sky-400 bg-sky-950/50 px-2 py-0.5 rounded border border-sky-800">Monitored</span>
             </div>
           </div>
         </div>
 
         <!-- Lot Audit & Buyer Feedback -->
-        <div class="bg-slate-950/80 p-3 rounded-lg border border-slate-800">
-          <div class="text-[11px] text-slate-400 font-semibold mb-1">Lot Audit Status:</div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">Lot 1: PASSED</span>
-            <span class="text-xs font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Lot 2: PENDING</span>
+        <div class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+          <div class="text-[10px] text-slate-400 font-semibold mb-1">Lot Audit Status:</div>
+          <div class="flex items-center gap-2 mb-2" id="lotAuditStatus">
+            <span class="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">Lot 1: PASSED</span>
+            <span class="text-[11px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Lot 2: PENDING</span>
           </div>
-          <div class="text-[11px] text-slate-400 font-semibold">Customer / Buyer Feedback:</div>
-          <div class="text-xs text-slate-300 italic mt-0.5">"Sewing quality good; maintain stitch tension consistently."</div>
+          <div class="text-[10px] text-slate-400 font-semibold">Customer / Buyer Feedback:</div>
+          <div class="text-xs text-slate-300 italic mt-0.5 line-clamp-2" id="buyerFeedback">"Sewing quality good; maintain stitch tension consistently."</div>
         </div>
       </div>
 
     </div>
   </main>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- LIVE SYNC WITH 60-SEC VISIBLE COUNTDOWN -->
   <script>
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWhjb4CN3HodVhggeb1mxo8ecKQ2_N19nAmBT2nZ_K9Y9CjuNgaJfsJ3dgEhn-hXxHNw/exec";
+
     // 1. Live Clock
     function updateClock() {
       const now = new Date();
@@ -219,64 +222,161 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2. Populate Dropdown for 36 Lines
+    // 2. Populate 36 Lines dropdown
     const lineSelect = document.getElementById('lineSelect');
     const urlParams = new URLSearchParams(window.location.search);
-    const activeLine = urlParams.get('line') || 'Line_17';
+    let currentLine = urlParams.get('line') || 'Line_17';
 
     for (let i = 1; i <= 36; i++) {
       const lineStr = 'Line_' + (i < 10 ? '0' + i : i);
       const opt = document.createElement('option');
       opt.value = lineStr;
       opt.textContent = `Line ${i < 10 ? '0' + i : i}`;
-      if (lineStr === activeLine) opt.selected = true;
+      if (lineStr === currentLine) opt.selected = true;
       lineSelect.appendChild(opt);
     }
 
     function onLineChange(val) {
+      currentLine = val;
       const newUrl = window.location.pathname + '?line=' + val;
       window.history.pushState({ path: newUrl }, '', newUrl);
-      loadLineData(val);
+      resetCountdown();
+      fetchSheetData(currentLine);
     }
-
-    // 3. Sample Board Data (Line 17 initial state)
-    const mockHourlyData = [
-      { hour: 'H1', target: 46, achieved: 28, diff: -18, problem: 'Supervisor Poor Follow Up', action: 'Talk to Supervisor for increase production', pic: 'DPM', time: '8:30 AM' },
-      { hour: 'H2', target: 46, achieved: 40, diff: -6,  problem: 'Normal feeding delay', action: 'Input balanced from cutting section', pic: 'DPM', time: '9:30 AM' },
-      { hour: 'H3', target: 46, achieved: 35, diff: -11, problem: 'Machine thread breaking', action: 'Mechanic tension calibration complete', pic: 'Mech', time: '10:30 AM' },
-      { hour: 'H4', target: 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' },
-      { hour: 'H5', target: 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' },
-      { hour: 'H6', target: 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' },
-      { hour: 'H7', target: 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' },
-      { hour: 'H8', target: 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' },
-      { hour: 'H9', target: 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' },
-      { hour: 'H10', target: 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' }
-    ];
 
     let chartInstance = null;
 
-    function renderHourlyTable(data) {
+    // 3. Fetch Data with Cache Buster
+    async function fetchSheetData(line) {
+      const badge = document.getElementById('syncBadge');
+      const syncText = document.getElementById('syncText');
+      
+      try {
+        syncText.textContent = "Updating...";
+        // Cache Buster parameter added: &_t=timestamp
+        const response = await fetch(`${API_ENDPOINT}?line=${line}&_t=${new Date().getTime()}`, {
+          cache: "no-store"
+        });
+        const result = await response.json();
+
+        if (result.status === "success" && result.data) {
+          parseAndRenderData(result.data, line);
+          syncText.textContent = "Live Synced";
+          badge.className = "flex items-center gap-2 bg-emerald-950/80 border border-emerald-600/50 text-emerald-400 text-xs px-3 py-1.5 rounded-lg font-mono";
+        } else {
+          throw new Error("Invalid response");
+        }
+      } catch (err) {
+        console.error("Fetch Error:", err);
+        syncText.textContent = "Sync Error";
+        badge.className = "flex items-center gap-2 bg-rose-950/80 border border-rose-600/50 text-rose-400 text-xs px-3 py-1.5 rounded-lg font-mono";
+      }
+    }
+
+    // 4. Data Parser
+    function parseAndRenderData(rows, lineName) {
+      document.getElementById('kpiLine').textContent = lineName.replace('_', ' ');
+
+      let buyer = "H&M", style = "Alexandra", ob = "667", hourlyTgt = "46", dayTgt = "459", runDay = "18";
+      let yestEff = "66.1%", mtdEff = "51.1%", lastOutput = "565", lastFc = "551";
+      let dhu = "4.66%", dr = "4.81%", ncr = "9.80%", br = "0.00%";
+      let hourlyRows = [];
+
+      for (let r = 0; r < rows.length; r++) {
+        const row = rows[r];
+        for (let c = 0; c < row.length; c++) {
+          const val = String(row[c]).trim();
+          if (val.includes("Buyer") && row[c+1]) buyer = row[c+1];
+          if (val.includes("Style") && row[c+1]) style = row[c+1];
+          if (val.includes("OB Target") && row[c+1]) ob = row[c+1];
+          if (val.includes("Hourly Target") && row[c+1]) hourlyTgt = row[c+1];
+          if (val.includes("Today's Total Target") && row[c+1]) dayTgt = row[c+1];
+          if (val.includes("Run Day") && row[c+1]) runDay = row[c+1];
+          if (val.includes("Yesterday's Efficiency") && row[c+1]) yestEff = formatPercent(row[c+1]);
+          if (val.includes("MTD Efficiency") && row[c+1]) mtdEff = formatPercent(row[c+1]);
+          if (val.includes("Last Day's Achievement") && row[c+1]) lastOutput = row[c+1];
+          if (val.includes("Last Day's Forecast") && row[c+1]) lastFc = row[c+1];
+
+          if (val === "DHU%") dhu = formatPercent(row[c+2] || row[c+1]);
+          if (val === "DR%") dr = formatPercent(row[c+2] || row[c+1]);
+          if (val === "NCR%") ncr = formatPercent(row[c+2] || row[c+1]);
+          if (val === "BR%") br = formatPercent(row[c+2] || row[c+1]);
+        }
+
+        // Table Hour detection
+        if (typeof row[0] === 'number' || (typeof row[0] === 'string' && row[0].match(/^[0-9]+$/))) {
+          const hNum = parseInt(row[0]);
+          if (hNum >= 1 && hNum <= 10) {
+            hourlyRows.push({
+              hour: 'H' + hNum,
+              target: Number(row[1]) || Number(hourlyTgt) || 46,
+              achieved: row[2] !== "" && row[2] !== undefined ? Number(row[2]) : null,
+              diff: row[5] !== "" && row[5] !== undefined ? Number(row[5]) : null,
+              problem: row[6] || "--",
+              action: row[7] || "--",
+              pic: row[8] || "--",
+              time: row[9] || "--"
+            });
+          }
+        }
+      }
+
+      // Update Dashboard KPIs
+      document.getElementById('kpiBuyer').textContent = buyer;
+      document.getElementById('kpiStyle').textContent = style;
+      document.getElementById('kpiOB').textContent = ob;
+      document.getElementById('kpiHourlyTarget').innerHTML = `${hourlyTgt} <span class="text-xs font-normal text-slate-400">pcs/hr</span>`;
+      document.getElementById('kpiDailyTarget').innerHTML = `${dayTgt} <span class="text-xs font-normal text-slate-400">pcs</span>`;
+      document.getElementById('kpiRunDay').textContent = runDay;
+      document.getElementById('kpiYestEff').textContent = yestEff;
+      document.getElementById('kpiMtdEff').textContent = mtdEff;
+      document.getElementById('kpiLastAchieve').innerHTML = `${lastOutput} <span class="text-xs font-normal text-slate-400">pcs</span>`;
+      document.getElementById('kpiLastForecast').textContent = lastFc;
+
+      document.getElementById('valDHU').textContent = dhu;
+      document.getElementById('valDR').textContent = dr + " ⚠️";
+      document.getElementById('valNCR').textContent = ncr;
+      document.getElementById('valBR').textContent = br;
+
+      if (hourlyRows.length === 0) {
+        for (let i = 1; i <= 10; i++) {
+          hourlyRows.push({ hour: 'H' + i, target: Number(hourlyTgt) || 46, achieved: null, diff: null, problem: '--', action: '--', pic: '--', time: '--' });
+        }
+      }
+
+      renderTable(hourlyRows);
+      renderChart(hourlyRows);
+    }
+
+    function formatPercent(val) {
+      if (typeof val === 'number') {
+        return (val <= 1 ? (val * 100).toFixed(1) : val.toFixed(1)) + '%';
+      }
+      return String(val).includes('%') ? val : val + '%';
+    }
+
+    function renderTable(data) {
       const tbody = document.getElementById('hourlyTableBody');
       tbody.innerHTML = '';
       let total = 0;
 
       data.forEach(row => {
-        if (row.achieved !== null) total += row.achieved;
+        if (row.achieved !== null && !isNaN(row.achieved)) total += row.achieved;
         const diffColor = row.diff < 0 ? 'text-rose-400' : (row.diff >= 0 && row.diff !== null ? 'text-emerald-400' : 'text-slate-500');
         const achievedColor = row.achieved !== null ? (row.achieved >= row.target ? 'text-emerald-400' : 'text-amber-400') : 'text-slate-500';
 
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-800/40 transition-colors';
         tr.innerHTML = `
-          <td class="py-2.5 px-3 font-bold text-sky-400">${row.hour}</td>
-          <td class="py-2.5 px-3 text-center text-slate-400">${row.target}</td>
-          <td class="py-2.5 px-3 text-center font-bold ${achievedColor}">${row.achieved !== null ? row.achieved : '-'}</td>
-          <td class="py-2.5 px-3 text-center font-bold ${diffColor}">${row.diff !== null ? (row.diff > 0 ? '+' + row.diff : row.diff) : '-'}</td>
-          <td class="py-2.5 px-3 truncate max-w-xs text-slate-300">
-            ${row.problem !== '--' ? `<span class="text-slate-400">${row.problem}</span> → <span class="text-sky-300 font-semibold">${row.action}</span>` : '<span class="text-slate-600">Pending</span>'}
+          <td class="py-2 px-3 font-bold text-sky-400">${row.hour}</td>
+          <td class="py-2 px-3 text-center text-slate-400">${row.target}</td>
+          <td class="py-2 px-3 text-center font-bold ${achievedColor}">${row.achieved !== null ? row.achieved : '-'}</td>
+          <td class="py-2 px-3 text-center font-bold ${diffColor}">${row.diff !== null ? (row.diff > 0 ? '+' + row.diff : row.diff) : '-'}</td>
+          <td class="py-2 px-3 truncate max-w-xs text-slate-300">
+            ${row.problem !== '--' ? `<span class="text-slate-400">${row.problem}</span> → <span class="text-sky-300 font-semibold">${row.action}</span>` : '<span class="text-slate-600">--</span>'}
           </td>
-          <td class="py-2.5 px-3 text-center text-slate-400">${row.pic}</td>
-          <td class="py-2.5 px-3 text-center text-slate-400">${row.time}</td>
+          <td class="py-2 px-3 text-center text-slate-400">${row.pic}</td>
+          <td class="py-2 px-3 text-center text-slate-400">${row.time}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -284,7 +384,7 @@
       document.getElementById('totalOutput').textContent = total;
     }
 
-    function initChart(data) {
+    function renderChart(data) {
       const ctx = document.getElementById('hourlyTrendChart').getContext('2d');
       const labels = data.map(d => d.hour);
       const targets = data.map(d => d.target);
@@ -298,7 +398,7 @@
           labels: labels,
           datasets: [
             {
-              label: 'Hourly Target',
+              label: 'Target',
               data: targets,
               backgroundColor: 'rgba(56, 189, 248, 0.25)',
               borderColor: 'rgba(56, 189, 248, 0.8)',
@@ -306,7 +406,7 @@
               borderRadius: 4
             },
             {
-              label: 'Achieved Output',
+              label: 'Achieved',
               data: achieved,
               backgroundColor: 'rgba(52, 211, 153, 0.8)',
               borderColor: 'rgba(52, 211, 153, 1)',
@@ -318,9 +418,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
             x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
             y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
@@ -329,14 +427,26 @@
       });
     }
 
-    function loadLineData(lineName) {
-      document.getElementById('kpiLine').textContent = lineName.replace('_', ' ');
-      renderHourlyTable(mockHourlyData);
-      initChart(mockHourlyData);
+    // 5. Visible 60-Second Countdown Timer (59 to 00s)
+    let countdownSec = 60;
+    const timerElem = document.getElementById('countdownTimer');
+
+    function resetCountdown() {
+      countdownSec = 60;
+      timerElem.textContent = `${countdownSec}s`;
     }
 
-    // Initialize on load
-    loadLineData(activeLine);
+    setInterval(() => {
+      countdownSec--;
+      if (countdownSec <= 0) {
+        countdownSec = 60;
+        fetchSheetData(currentLine);
+      }
+      timerElem.textContent = `${countdownSec < 10 ? '0' + countdownSec : countdownSec}s`;
+    }, 1000);
+
+    // Initial load
+    fetchSheetData(currentLine);
   </script>
 </body>
 </html>
