@@ -2,7 +2,7 @@
 <html lang="bn" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Baridhi Garments Limited - Smart Line Production Dashboard</title>
   
   <!-- Tailwind CSS CDN -->
@@ -51,11 +51,39 @@
   </script>
 
   <style>
-    body {
+    /* Fullscreen Auto-Fit & Zero Scroll Architecture */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
       background-color: #060B14;
       color: #f1f5f9;
       overflow-x: hidden;
+      overflow-y: hidden; /* Zero scroll for TV viewports */
     }
+
+    /* Screen scaling container */
+    #dashboardScaler {
+      width: 1920px;
+      min-height: 1080px;
+      transform-origin: top left;
+      transition: transform 0.15s ease-out;
+    }
+
+    /* Mobile portrait fallback */
+    @media (max-width: 1024px) and (orientation: portrait) {
+      html, body {
+        overflow-y: auto !important;
+        height: auto !important;
+      }
+      #dashboardScaler {
+        width: 100% !important;
+        min-height: auto !important;
+        transform: none !important;
+      }
+    }
+
     .glow-cyan {
       box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
     }
@@ -73,31 +101,32 @@
     }
   </style>
 </head>
-<body class="bg-factory-950 text-slate-100 font-sans min-h-screen selection:bg-neon-cyan selection:text-black">
+<body class="bg-factory-950 text-slate-100 font-sans selection:bg-neon-cyan selection:text-black">
 
-  <div class="max-w-[1920px] mx-auto p-2 sm:p-4 md:p-5 space-y-3 sm:space-y-4">
+  <!-- AUTO-SCALING VIEWPORT WRAPPER -->
+  <div id="dashboardScaler" class="p-3.5 space-y-3">
     
     <!-- 1. HEADER SECTION -->
-    <header class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card flex flex-col xl:flex-row items-center justify-between gap-4">
+    <header class="bg-factory-card border border-factory-border rounded-xl p-3 glow-card flex flex-col xl:flex-row items-center justify-between gap-3">
       
-      <!-- Brand & Moto -->
-      <div class="flex items-center gap-4 w-full xl:w-auto justify-between xl:justify-start">
+      <!-- Brand & Motto -->
+      <div class="flex items-center gap-3 w-full xl:w-auto justify-between xl:justify-start">
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-neon-blue to-neon-cyan p-0.5 flex items-center justify-center glow-cyan">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-neon-blue to-neon-cyan p-0.5 flex items-center justify-center glow-cyan">
             <div class="w-full h-full bg-factory-950 rounded-[10px] flex items-center justify-center">
-              <i class="fa-solid fa-shirt text-neon-cyan text-xl"></i>
+              <i class="fa-solid fa-shirt text-neon-cyan text-lg"></i>
             </div>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="text-xl sm:text-2xl font-black tracking-wider text-white uppercase">
+              <h1 class="text-xl font-black tracking-wider text-white uppercase">
                 Baridhi Garments <span class="text-neon-cyan">Limited</span>
               </h1>
               <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE SEWING
               </span>
             </div>
-            <p class="text-neon-amber text-xs sm:text-sm font-bn font-bold tracking-wide">
+            <p class="text-neon-amber text-xs font-bn font-bold tracking-wide">
               ★ লক্ষ্য মোদের একটাই সেরা হবো আমরাই
             </p>
           </div>
@@ -105,7 +134,7 @@
       </div>
 
       <!-- Core Values Banner -->
-      <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 bg-factory-900/90 py-1.5 px-4 rounded-lg border border-factory-border/70 text-[11px] sm:text-xs">
+      <div class="flex flex-wrap items-center justify-center gap-3 bg-factory-900/90 py-1 px-4 rounded-lg border border-factory-border/70 text-xs">
         <span class="text-slate-400 font-medium">মূলনীতি:</span>
         <span class="flex items-center gap-1 text-slate-200 font-bn"><i class="fa-solid fa-scale-balanced text-neon-cyan text-[10px]"></i> সততা/ন্যায়পরায়ণতা</span>
         <span class="text-factory-border">•</span>
@@ -126,10 +155,10 @@
         </div>
 
         <!-- Line Selector -->
-        <div class="flex items-center gap-1 bg-factory-900 border border-factory-border px-2.5 py-1.5 rounded-lg">
+        <div class="flex items-center gap-1 bg-factory-900 border border-factory-border px-2.5 py-1 rounded-lg">
           <label for="lineSelect" class="text-xs text-slate-400 font-semibold font-mono">Line:</label>
           <select id="lineSelect" onchange="onLineChange(this.value)" class="bg-transparent text-xs font-bold text-neon-cyan focus:outline-none cursor-pointer font-mono">
-            <!-- Line_01 to Line_36 populated dynamically -->
+            <!-- Dynamically populated Line_01 to Line_36 -->
           </select>
         </div>
 
@@ -139,7 +168,7 @@
             <i class="fa-regular fa-calendar-days text-neon-cyan"></i>
             <span id="currentDate">--.--.----</span>
           </div>
-          <div id="liveClock" class="text-base sm:text-xl font-black font-mono tracking-tight text-white">
+          <div id="liveClock" class="text-lg font-black font-mono tracking-tight text-white">
             --:--:--
           </div>
         </div>
@@ -152,74 +181,71 @@
     </header>
 
     <!-- 2. PRODUCTION INFO & TOP KEY METRIC TILES -->
-    <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+    <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
       
       <!-- Line No -->
-      <div class="bg-gradient-to-br from-factory-card to-blue-950/40 p-3 sm:p-4 rounded-xl border border-blue-500/30 glow-card relative overflow-hidden group">
-        <div class="absolute right-2 top-2 text-blue-500/10 group-hover:text-blue-500/20 text-4xl transition-all">
-          <i class="fa-solid fa-diagram-project"></i>
-        </div>
+      <div class="bg-gradient-to-br from-factory-card to-blue-950/40 p-3 rounded-xl border border-blue-500/30 glow-card relative overflow-hidden group">
         <div class="text-xs text-slate-300 font-medium">Line No. <span class="font-bn text-[11px] text-slate-400">(লাইন নং)</span></div>
-        <div class="text-2xl sm:text-3xl font-black text-neon-cyan font-mono mt-1" id="kpiLine">LINE 17</div>
-        <div class="text-[11px] font-bn text-emerald-400 mt-1 flex items-center gap-1 font-semibold">
+        <div class="text-2xl sm:text-3xl font-black text-neon-cyan font-mono mt-0.5" id="kpiLine">LINE 17</div>
+        <div class="text-[11px] font-bn text-emerald-400 mt-0.5 flex items-center gap-1 font-semibold">
           <i class="fa-solid fa-play text-[9px]"></i> রান ডে (Run Days): <span id="kpiRunDay" class="font-mono">18</span> দিন
         </div>
       </div>
 
       <!-- Buyer -->
-      <div class="bg-gradient-to-br from-factory-card to-indigo-950/40 p-3 sm:p-4 rounded-xl border border-indigo-500/30 glow-card relative overflow-hidden">
+      <div class="bg-gradient-to-br from-factory-card to-indigo-950/40 p-3 rounded-xl border border-indigo-500/30 glow-card relative overflow-hidden">
         <div class="text-xs text-slate-300 font-medium">Buyer Name <span class="font-bn text-[11px] text-slate-400">(বায়ার)</span></div>
-        <div class="text-2xl sm:text-3xl font-black text-white tracking-wide mt-1 truncate" id="kpiBuyer">H&M</div>
-        <div class="text-[11px] text-indigo-300 font-mono mt-1 flex items-center gap-1 truncate">
+        <div class="text-2xl sm:text-3xl font-black text-white tracking-wide mt-0.5 truncate" id="kpiBuyer">H&M</div>
+        <div class="text-[11px] text-indigo-300 font-mono mt-0.5 flex items-center gap-1 truncate">
           <i class="fa-solid fa-tag text-[9px]"></i> Style: <span class="font-bold text-white" id="kpiStyle">Alexandra</span>
         </div>
       </div>
 
       <!-- Hourly Target -->
-      <div class="bg-gradient-to-br from-factory-card to-cyan-950/40 p-3 sm:p-4 rounded-xl border border-cyan-500/30 glow-card">
+      <div class="bg-gradient-to-br from-factory-card to-cyan-950/40 p-3 rounded-xl border border-cyan-500/30 glow-card">
         <div class="text-xs text-slate-300 font-medium">Hourly Target <span class="font-bn text-[11px] text-slate-400">(প্রতি ঘণ্টার টার্গেট)</span></div>
-        <div class="flex items-baseline gap-1 mt-1">
+        <div class="flex items-baseline gap-1 mt-0.5">
           <span class="text-2xl sm:text-3xl font-black text-neon-cyan font-mono" id="valHourlyTarget">46</span>
           <span class="text-xs text-slate-400 font-mono">pcs/hr</span>
         </div>
-        <div class="text-[11px] text-slate-400 font-bn mt-1">
+        <div class="text-[11px] text-slate-400 font-bn mt-0.5">
           OB টার্গেট: <span class="text-white font-bold font-mono" id="valOBTarget">667</span> pcs
         </div>
       </div>
 
       <!-- Today's Total Target -->
-      <div class="bg-gradient-to-br from-factory-card to-amber-950/40 p-3 sm:p-4 rounded-xl border border-amber-500/30 glow-card">
+      <div class="bg-gradient-to-br from-factory-card to-amber-950/40 p-3 rounded-xl border border-amber-500/30 glow-card">
         <div class="text-xs text-slate-300 font-medium">Today's Target <span class="font-bn text-[11px] text-slate-400">(আজকের সারাদিনের টার্গেট)</span></div>
-        <div class="flex items-baseline gap-1 mt-1">
+        <div class="flex items-baseline gap-1 mt-0.5">
           <span class="text-2xl sm:text-3xl font-black text-neon-amber font-mono" id="valTodayTarget">459</span>
           <span class="text-xs text-slate-400 font-mono">pcs</span>
         </div>
-        <div class="text-[11px] text-amber-300/80 font-bn mt-1 flex items-center justify-between">
+        <div class="text-[11px] text-amber-300/80 font-bn mt-0.5 flex items-center justify-between">
           <span>অর্জিত: <strong class="text-white font-mono" id="valCumulativeSum">105</strong> pcs</span>
           <span class="text-[10px] bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300 font-mono" id="valTargetPercent">22.8%</span>
         </div>
       </div>
 
       <!-- Yesterday's Efficiency -->
-      <div class="bg-gradient-to-br from-factory-card to-emerald-950/40 p-3 sm:p-4 rounded-xl border border-emerald-500/30 glow-card">
+      <div class="bg-gradient-to-br from-factory-card to-emerald-950/40 p-3 rounded-xl border border-emerald-500/30 glow-card">
         <div class="text-xs text-slate-300 font-medium">Efficiency <span class="font-bn text-[11px] text-slate-400">(গতকালকের দক্ষতা)</span></div>
-        <div class="flex items-baseline gap-1 mt-1">
+        <div class="flex items-baseline gap-1 mt-0.5">
           <span class="text-2xl sm:text-3xl font-black text-neon-green font-mono" id="valYestEff">66.1%</span>
         </div>
-        <div class="text-[11px] text-slate-300 mt-1 flex items-center justify-between font-mono">
+        <div class="text-[11px] text-slate-300 mt-0.5 flex items-center justify-between font-mono">
           <span>MTD: <strong class="text-white font-mono text-neon-rose" id="valMtdEff">51.1%</strong></span>
           <span>Last Mo: <strong class="text-white font-mono" id="valLmEff">59%</strong></span>
         </div>
       </div>
 
       <!-- Yesterday Output vs Forecast -->
-      <div class="bg-gradient-to-br from-factory-card to-purple-950/40 p-3 sm:p-4 rounded-xl border border-purple-500/30 glow-card">
+      <div class="bg-gradient-to-br from-factory-card to-purple-950/40 p-3 rounded-xl border border-purple-500/30 glow-card">
         <div class="text-xs text-slate-300 font-medium">Last Day Achieved <span class="font-bn text-[11px] text-slate-400">(গতকালের অর্জন)</span></div>
-        <div class="flex items-baseline gap-1 mt-1">
+        <div class="flex items-baseline gap-1 mt-0.5">
           <span class="text-2xl sm:text-3xl font-black text-purple-300 font-mono" id="valLastAchieved">565</span>
           <span class="text-xs text-emerald-400 font-mono font-bold">+2.5%</span>
         </div>
-        <div class="text-[11px] text-slate-400 mt-1 font-bn">
+        <div class="text-[11px] text-slate-400 mt-0.5 font-bn">
           Forecast ছিল: <span class="text-white font-mono font-semibold" id="valLastForecast">551</span> pcs
         </div>
       </div>
@@ -227,11 +253,11 @@
     </section>
 
     <!-- 3. QUALITY MONITORING & QA KPIS -->
-    <section class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card">
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between pb-3 mb-3 border-b border-factory-border gap-2">
+    <section class="bg-factory-card border border-factory-border rounded-xl p-3 glow-card">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between pb-2 mb-2 border-b border-factory-border gap-2">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-sm bg-neon-cyan"></span>
-          <h2 class="text-base sm:text-lg font-bold text-white tracking-wide">
+          <h2 class="text-sm font-bold text-white tracking-wide">
             Quality & Defect KPI Dashboard <span class="text-xs text-slate-400 font-bn font-normal">(গুণগত মান ও ডিফেক্ট পরিসংখ্যান)</span>
           </h2>
         </div>
@@ -241,17 +267,16 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
         <!-- DHU % -->
         <div class="bg-factory-900/90 border border-emerald-500/40 rounded-lg p-2.5 flex flex-col justify-between" id="boxDHU">
           <div class="flex justify-between items-center text-xs">
             <span class="font-bold text-slate-200">DHU %</span>
             <span class="text-[10px] text-slate-400 font-mono">Target &lt; 5%</span>
           </div>
-          <div class="my-2">
+          <div class="my-1.5">
             <div class="text-2xl font-black text-neon-green font-mono" id="valDHU">4.66%</div>
-            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
               <div id="barDHU" class="bg-neon-green h-full rounded-full transition-all duration-500" style="width: 78%"></div>
             </div>
           </div>
@@ -266,14 +291,14 @@
             <span class="font-bold text-slate-200">DR %</span>
             <span class="text-[10px] text-rose-400 font-mono">Target &lt; 3%</span>
           </div>
-          <div class="my-2">
+          <div class="my-1.5">
             <div class="text-2xl font-black text-neon-rose font-mono neon-text-rose" id="valDR">4.81%</div>
-            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
               <div id="barDR" class="bg-neon-rose h-full rounded-full transition-all duration-500" style="width: 95%"></div>
             </div>
           </div>
           <div class="text-[10px] text-rose-400 flex items-center gap-1 font-medium" id="statusDR">
-            <i class="fa-solid fa-triangle-exclamation"></i> +1.81% over limit!
+            <i class="fa-solid fa-triangle-exclamation"></i> Alert over limit
           </div>
         </div>
 
@@ -283,9 +308,9 @@
             <span class="font-bold text-slate-200">NCR %</span>
             <span class="text-[10px] text-slate-400 font-mono">Target 10%</span>
           </div>
-          <div class="my-2">
+          <div class="my-1.5">
             <div class="text-2xl font-black text-neon-green font-mono" id="valNCR">9.8%</div>
-            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
               <div id="barNCR" class="bg-neon-green h-full rounded-full transition-all duration-500" style="width: 85%"></div>
             </div>
           </div>
@@ -297,12 +322,12 @@
         <!-- BR % -->
         <div class="bg-factory-900/90 border border-emerald-500/40 rounded-lg p-2.5 flex flex-col justify-between">
           <div class="flex justify-between items-center text-xs">
-            <span class="font-bold text-slate-200">BR % (Broken Needle)</span>
+            <span class="font-bold text-slate-200">BR %</span>
             <span class="text-[10px] text-slate-400 font-mono">Target 5%</span>
           </div>
-          <div class="my-2">
+          <div class="my-1.5">
             <div class="text-2xl font-black text-neon-cyan font-mono" id="valBR">0%</div>
-            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
               <div class="bg-neon-cyan h-full rounded-full" style="width: 0%"></div>
             </div>
           </div>
@@ -317,32 +342,32 @@
             <span class="font-bold text-slate-200">Defect Cost</span>
             <span class="text-[10px] text-slate-400 font-mono">USD $</span>
           </div>
-          <div class="my-2">
+          <div class="my-1.5">
             <div class="text-2xl font-black text-neon-amber font-mono" id="valDefectCost">$124.50</div>
-            <div class="text-[11px] text-slate-400 mt-1 font-bn">আনুমানিক ত্রুটি ক্ষতি</div>
+            <div class="text-[11px] text-slate-400 mt-0.5 font-bn">আনুমানিক ত্রুটি ক্ষতি</div>
           </div>
           <div class="text-[10px] text-slate-400 flex items-center gap-1 font-mono">
-            <i class="fa-solid fa-chart-line text-neon-amber"></i> Cumulative this week
+            <i class="fa-solid fa-chart-line text-neon-amber"></i> Cumulative week
           </div>
         </div>
 
         <!-- Top 3 Defects Spotlight -->
         <div class="bg-gradient-to-br from-rose-950/40 to-factory-900 border border-rose-500/40 rounded-lg p-2.5 flex flex-col justify-between">
-          <div class="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1 font-mono">
+          <div class="text-[11px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1 font-mono">
             <i class="fa-solid fa-circle-exclamation text-neon-rose"></i> TOP 3 DEFECTS
           </div>
           <div class="space-y-1 my-1 text-xs font-medium">
-            <div class="flex justify-between items-center bg-rose-500/10 px-2 py-0.5 rounded text-rose-200 border border-rose-500/20">
+            <div class="flex justify-between items-center bg-rose-500/10 px-1.5 py-0.5 rounded text-rose-200 border border-rose-500/20">
               <span id="defectName1">1. PUCKERING</span>
-              <span class="font-mono text-[11px] text-rose-300 font-bold">48%</span>
+              <span class="font-mono text-[10px] text-rose-300 font-bold">48%</span>
             </div>
-            <div class="flex justify-between items-center bg-factory-800/80 px-2 py-0.5 rounded text-slate-300">
+            <div class="flex justify-between items-center bg-factory-800/80 px-1.5 py-0.5 rounded text-slate-300">
               <span id="defectName2">2. SKIP STITCH</span>
-              <span class="font-mono text-[11px] text-slate-400">32%</span>
+              <span class="font-mono text-[10px] text-slate-400">32%</span>
             </div>
-            <div class="flex justify-between items-center bg-factory-800/80 px-2 py-0.5 rounded text-slate-300">
+            <div class="flex justify-between items-center bg-factory-800/80 px-1.5 py-0.5 rounded text-slate-300">
               <span id="defectName3">3. PLEAT</span>
-              <span class="font-mono text-[11px] text-slate-400">20%</span>
+              <span class="font-mono text-[10px] text-slate-400">20%</span>
             </div>
           </div>
           <div class="text-[10px] text-slate-400 font-bn">তাত্ক্ষণিক QA অডিট প্রয়োজন</div>
@@ -352,18 +377,17 @@
     </section>
 
     <!-- 4. MAIN OPERATIONAL WORKSPACE -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
       
       <!-- LEFT COLUMN: Hourly Tracking Matrix (8 Cols) -->
-      <section class="lg:col-span-8 bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card flex flex-col justify-between">
+      <section class="lg:col-span-8 bg-factory-card border border-factory-border rounded-xl p-3 glow-card flex flex-col justify-between">
         <div>
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-3 border-b border-factory-border gap-2">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 mb-2 border-b border-factory-border gap-2">
             <div>
-              <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <h2 class="text-sm font-bold text-white flex items-center gap-2">
                 <i class="fa-solid fa-table-list text-neon-cyan"></i>
                 Hourly Output & Real-time Action Matrix
               </h2>
-              <p class="text-xs text-slate-400 font-bn">ঘণ্টাভিত্তিক উৎপাদন ট্র্যাকিং ও সমস্যা সমাধান অ্যাকশন প্ল্যান</p>
             </div>
             <div class="flex items-center gap-2">
               <span class="text-xs text-slate-400 font-mono">Shift Total: <strong class="text-neon-cyan font-bold" id="shiftTotalHeader">105</strong> pcs</span>
@@ -374,16 +398,16 @@
           <div class="overflow-x-auto rounded-lg border border-factory-border">
             <table class="w-full text-left border-collapse text-xs">
               <thead>
-                <tr class="bg-factory-900 text-slate-300 uppercase tracking-wider text-[11px] border-b border-factory-border font-mono">
-                  <th class="py-2.5 px-3 text-center">Hour</th>
-                  <th class="py-2.5 px-3 text-center">Target</th>
-                  <th class="py-2.5 px-3 text-center">Achieved (পিস)</th>
-                  <th class="py-2.5 px-3 text-center">Cum. (মোট)</th>
-                  <th class="py-2.5 px-3 text-center">Status</th>
-                  <th class="py-2.5 px-3">Problem Type (সমস্যা)</th>
-                  <th class="py-2.5 px-3">Action Plan (পদক্ষেপ)</th>
-                  <th class="py-2.5 px-3 text-center">Who</th>
-                  <th class="py-2.5 px-3 text-center">Time</th>
+                <tr class="bg-factory-900 text-slate-300 uppercase tracking-wider text-[10px] border-b border-factory-border font-mono">
+                  <th class="py-2 px-2 text-center">Hour</th>
+                  <th class="py-2 px-2 text-center">Target</th>
+                  <th class="py-2 px-2 text-center">Achieved</th>
+                  <th class="py-2 px-2 text-center">Cum.</th>
+                  <th class="py-2 px-2 text-center">Status</th>
+                  <th class="py-2 px-2">Problem Type</th>
+                  <th class="py-2 px-2">Action Plan</th>
+                  <th class="py-2 px-2 text-center">Who</th>
+                  <th class="py-2 px-2 text-center">Time</th>
                 </tr>
               </thead>
               <tbody id="hourlyTableBody" class="divide-y divide-factory-border/60 font-sans">
@@ -393,11 +417,10 @@
           </div>
         </div>
 
-        <!-- Footer Banner inside Matrix -->
-        <div class="mt-3 pt-2 border-t border-factory-border flex flex-wrap items-center justify-between gap-2 text-xs">
-          <div class="flex items-center gap-3">
-            <span class="text-slate-400 font-bn">শিফট টার্গেট বিশ্লেষণ:</span>
-            <span class="text-emerald-400 font-mono font-semibold" id="shiftInsightText"><i class="fa-solid fa-arrow-trend-up"></i> Hour 2 recovered +42% vs Hour 1</span>
+        <div class="mt-2 pt-2 border-t border-factory-border flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400 font-bn text-[11px]">শিফট বিশ্লেষণ:</span>
+            <span class="text-emerald-400 font-mono text-[11px] font-semibold" id="shiftInsightText"><i class="fa-solid fa-arrow-trend-up"></i> Hour 2 recovered +42% vs Hour 1</span>
           </div>
           <div class="text-[11px] text-slate-500 font-mono">
             Line Leader: Md. Rafiqul Islam (Badge: #BGL-4091)
@@ -406,93 +429,81 @@
       </section>
 
       <!-- RIGHT COLUMN: Lot Audit, Customer Feedback, Skill Matrix (4 Cols) -->
-      <section class="lg:col-span-4 space-y-3 sm:space-y-4 flex flex-col justify-between">
+      <section class="lg:col-span-4 space-y-2.5 flex flex-col justify-between">
         
         <!-- Lot Audit Status -->
-        <div class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-factory-border">
-            <h3 class="text-sm font-bold text-white flex items-center gap-1.5 font-sans">
+        <div class="bg-factory-card border border-factory-border rounded-xl p-3 glow-card">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-factory-border">
+            <h3 class="text-xs font-bold text-white flex items-center gap-1.5 font-sans">
               <i class="fa-solid fa-clipboard-check text-neon-green"></i>
-              Lot Audit Status <span class="text-xs font-normal text-slate-400 font-bn">(লট অডিট)</span>
+              Lot Audit Status <span class="text-[10px] text-slate-400 font-bn">(লট অডিট)</span>
             </h3>
-            <span class="text-[11px] font-mono text-neon-green bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+            <span class="text-[10px] font-mono text-neon-green bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
               4 Passed / 1 Pending
             </span>
           </div>
 
-          <div class="space-y-1.5 text-xs">
-            <div class="flex items-center justify-between p-2 rounded bg-factory-900 border border-factory-border/60">
-              <div class="flex items-center gap-2">
-                <span class="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold flex items-center justify-center text-[10px]">L1</span>
-                <span class="text-slate-200 font-medium">Batch #8021</span>
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center justify-between p-1.5 rounded bg-factory-900 border border-factory-border/60">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold flex items-center justify-center text-[9px]">L1</span>
+                <span class="text-slate-200 font-medium text-[11px]">Batch #8021</span>
               </div>
-              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded font-mono">PASSED</span>
-              <span class="text-[11px] text-slate-400 font-mono">0 Defect</span>
+              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded font-mono">PASSED</span>
+              <span class="text-[10px] text-slate-400 font-mono">0 Defect</span>
             </div>
 
-            <div class="flex items-center justify-between p-2 rounded bg-factory-900 border border-factory-border/60">
-              <div class="flex items-center gap-2">
-                <span class="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold flex items-center justify-center text-[10px]">L2</span>
-                <span class="text-slate-200 font-medium">Batch #8022</span>
+            <div class="flex items-center justify-between p-1.5 rounded bg-factory-900 border border-factory-border/60">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold flex items-center justify-center text-[9px]">L2</span>
+                <span class="text-slate-200 font-medium text-[11px]">Batch #8022</span>
               </div>
-              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded font-mono">PASSED</span>
-              <span class="text-[11px] text-slate-400 font-mono">Minor Puckering</span>
+              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded font-mono">PASSED</span>
+              <span class="text-[10px] text-slate-400 font-mono">Puckering</span>
             </div>
 
-            <div class="flex items-center justify-between p-2 rounded bg-factory-900 border border-rose-500/30">
-              <div class="flex items-center gap-2">
-                <span class="w-5 h-5 rounded bg-rose-500/20 text-rose-400 font-mono font-bold flex items-center justify-center text-[10px]">L3</span>
-                <span class="text-slate-200 font-medium">Batch #8023</span>
+            <div class="flex items-center justify-between p-1.5 rounded bg-factory-900 border border-rose-500/30">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded bg-rose-500/20 text-rose-400 font-mono font-bold flex items-center justify-center text-[9px]">L3</span>
+                <span class="text-slate-200 font-medium text-[11px]">Batch #8023</span>
               </div>
-              <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded font-mono">CONDITIONAL</span>
-              <span class="text-[11px] text-rose-400 font-mono">Pleat defect alert</span>
-            </div>
-
-            <div class="flex items-center justify-between p-2 rounded bg-factory-900 border border-factory-border/60">
-              <div class="flex items-center gap-2">
-                <span class="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold flex items-center justify-center text-[10px]">L4</span>
-                <span class="text-slate-200 font-medium">Batch #8024</span>
-              </div>
-              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded font-mono">PASSED</span>
-              <span class="text-[11px] text-slate-400 font-mono">0 Defect</span>
+              <span class="text-[9px] bg-amber-500/20 text-amber-300 font-bold px-1.5 py-0.5 rounded font-mono">CONDITIONAL</span>
+              <span class="text-[10px] text-rose-400 font-mono">Pleat defect</span>
             </div>
           </div>
         </div>
 
         <!-- Customer Feedback -->
-        <div class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-factory-border">
-            <h3 class="text-sm font-bold text-white flex items-center gap-1.5 font-sans">
+        <div class="bg-factory-card border border-factory-border rounded-xl p-3 glow-card">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-factory-border">
+            <h3 class="text-xs font-bold text-white flex items-center gap-1.5 font-sans">
               <i class="fa-solid fa-comments text-neon-cyan"></i>
-              Customer's Feedback <span class="text-xs font-normal text-slate-400 font-bn">(বায়ারের মন্তব্য)</span>
+              Customer's Feedback
             </h3>
-            <span class="text-xs font-mono text-neon-amber">H&M QA Audit</span>
+            <span class="text-[10px] font-mono text-neon-amber">H&M QA Audit</span>
           </div>
 
-          <div class="bg-factory-900/80 p-2.5 rounded-lg border border-factory-border text-xs space-y-1.5">
-            <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+          <div class="bg-factory-900/80 p-2 rounded-lg border border-factory-border text-xs space-y-1">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono">
               <span id="feedbackDate">Date: 28.10.2026</span>
               <span class="text-neon-green"><i class="fa-solid fa-star"></i> 4.5 / 5.0</span>
             </div>
-            <p class="text-slate-200 italic font-sans leading-relaxed" id="buyerFeedbackText">
-              "Overall stitch tension and collar shape are excellent on the Alexandra style. Ensure strict iron press control on armholes to eliminate puckering."
+            <p class="text-slate-200 italic font-sans leading-relaxed text-[11px]" id="buyerFeedbackText">
+              "Overall stitch tension and collar shape are excellent on the Alexandra style. Ensure strict iron press control on armholes."
             </p>
-            <div class="text-right text-[10px] text-neon-cyan font-mono font-semibold">
-              — Mark Jansen, H&M Technical Auditor
-            </div>
           </div>
         </div>
 
-        <!-- Skill Matrix & Operator Motivation -->
-        <div class="bg-gradient-to-r from-blue-950/60 to-factory-card border border-blue-500/30 rounded-xl p-3 glow-card">
+        <!-- Skill Matrix -->
+        <div class="bg-gradient-to-r from-blue-950/60 to-factory-card border border-blue-500/30 rounded-xl p-2.5 glow-card">
           <div class="flex items-center justify-between text-xs font-medium">
-            <span class="text-slate-200 flex items-center gap-1.5 font-bn">
+            <span class="text-slate-200 flex items-center gap-1 font-bn text-[11px]">
               <i class="fa-solid fa-medal text-neon-amber"></i> স্কিল মেট্রিক্স ও মোটিভেশন
             </span>
-            <span class="text-[10px] bg-blue-500/20 text-cyan-300 px-2 py-0.5 rounded font-mono">A-Grade 92%</span>
+            <span class="text-[9px] bg-blue-500/20 text-cyan-300 px-1.5 py-0.5 rounded font-mono">A-Grade 92%</span>
           </div>
-          <p class="text-[11px] text-slate-400 mt-1 font-bn">
-            আজকের সেরা অপারেটর: <strong>রোকসানা আক্তার</strong> (মেশিন #০৯, অর্জন: ১১৮%)
+          <p class="text-[10px] text-slate-400 mt-1 font-bn">
+            আজকের সেরা অপারেটর: <strong>রোকসানা আক্তার</strong> (মেশিন #০৯, ১১৮%)
           </p>
         </div>
 
@@ -501,59 +512,59 @@
     </div>
 
     <!-- 5. BOTTOM VISUAL ANALYTICS & INTERACTIVE CHARTS -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
       
       <!-- Chart 1: Hourly Target vs Output -->
-      <div class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card flex flex-col justify-between">
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-factory-border">
+      <div class="bg-factory-card border border-factory-border rounded-xl p-2.5 glow-card flex flex-col justify-between">
+        <div class="flex items-center justify-between pb-1.5 mb-1 border-b border-factory-border">
           <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-sans">
             <i class="fa-solid fa-chart-column text-neon-cyan"></i> Hourly Target vs Actual
           </h4>
           <span class="text-[10px] font-mono text-slate-400">pcs</span>
         </div>
-        <div class="relative h-44 w-full">
+        <div class="relative h-32 w-full">
           <canvas id="hourlyChart"></canvas>
         </div>
-        <div class="flex justify-between items-center text-[10px] text-slate-400 font-mono mt-1 pt-1 border-t border-factory-border">
+        <div class="flex justify-between items-center text-[9px] text-slate-400 font-mono mt-1 pt-0.5 border-t border-factory-border">
           <span class="text-neon-cyan">■ Achieved</span>
           <span class="text-slate-500">■ Planned Target (46)</span>
         </div>
       </div>
 
       <!-- Chart 2: Defect Breakdown Pareto Donut -->
-      <div class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card flex flex-col justify-between">
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-factory-border">
+      <div class="bg-factory-card border border-factory-border rounded-xl p-2.5 glow-card flex flex-col justify-between">
+        <div class="flex items-center justify-between pb-1.5 mb-1 border-b border-factory-border">
           <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-sans">
             <i class="fa-solid fa-chart-pie text-neon-rose"></i> Defect Distribution %
           </h4>
-          <span class="text-[10px] font-mono text-neon-rose" id="chartDrText">Total: 4.81% DR</span>
+          <span class="text-[9px] font-mono text-neon-rose" id="chartDrText">Total: 4.81% DR</span>
         </div>
-        <div class="relative h-44 w-full flex items-center justify-center">
+        <div class="relative h-32 w-full flex items-center justify-center">
           <canvas id="defectChart"></canvas>
         </div>
-        <div class="flex justify-around text-[10px] text-slate-400 font-mono mt-1 pt-1 border-t border-factory-border">
-          <span class="text-rose-400">● Puckering 48%</span>
-          <span class="text-amber-400">● Skip 32%</span>
-          <span class="text-cyan-400">● Pleat 20%</span>
+        <div class="flex justify-around text-[9px] text-slate-400 font-mono mt-1 pt-0.5 border-t border-factory-border">
+          <span class="text-rose-400">● Puckering</span>
+          <span class="text-amber-400">● Skip</span>
+          <span class="text-cyan-400">● Pleat</span>
         </div>
       </div>
 
       <!-- Chart 3: Efficiency Gauge / Pace -->
-      <div class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card flex flex-col justify-between">
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-factory-border">
+      <div class="bg-factory-card border border-factory-border rounded-xl p-2.5 glow-card flex flex-col justify-between">
+        <div class="flex items-center justify-between pb-1.5 mb-1 border-b border-factory-border">
           <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-sans">
             <i class="fa-solid fa-gauge-high text-neon-green"></i> Shift Efficiency Pace
           </h4>
-          <span class="text-[10px] font-mono text-emerald-400">Target 70%</span>
+          <span class="text-[9px] font-mono text-emerald-400">Target 70%</span>
         </div>
-        <div class="relative h-44 w-full flex items-center justify-center">
+        <div class="relative h-32 w-full flex items-center justify-center">
           <canvas id="efficiencyChart"></canvas>
           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span class="text-2xl font-black font-mono text-neon-green" id="effGaugeCenter">64.5%</span>
-            <span class="text-[10px] text-slate-400 uppercase font-mono">Current Run</span>
+            <span class="text-lg font-black font-mono text-neon-green" id="effGaugeCenter">64.5%</span>
+            <span class="text-[9px] text-slate-400 uppercase font-mono">Current Run</span>
           </div>
         </div>
-        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1 pt-1 border-t border-factory-border">
+        <div class="flex justify-between text-[9px] text-slate-400 font-mono mt-1 pt-0.5 border-t border-factory-border">
           <span>Min: 45%</span>
           <span class="text-white font-bold" id="effGaugeYest">Yesterday: 66.1%</span>
           <span>Max: 85%</span>
@@ -561,38 +572,38 @@
       </div>
 
       <!-- Chart 4: Capacity & Order Completion -->
-      <div class="bg-factory-card border border-factory-border rounded-xl p-3 sm:p-4 glow-card flex flex-col justify-between">
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-factory-border">
+      <div class="bg-factory-card border border-factory-border rounded-xl p-2.5 glow-card flex flex-col justify-between">
+        <div class="flex items-center justify-between pb-1.5 mb-1 border-b border-factory-border">
           <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-sans">
             <i class="fa-solid fa-boxes-stacked text-neon-amber"></i> Line Capacity Allocation
           </h4>
-          <span class="text-[10px] font-mono text-slate-400" id="allocLineTag">Line 17</span>
+          <span class="text-[9px] font-mono text-slate-400" id="allocLineTag">Line 17</span>
         </div>
-        <div class="relative h-44 w-full flex items-center justify-center">
+        <div class="relative h-32 w-full flex items-center justify-center">
           <canvas id="allocationChart"></canvas>
           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span class="text-xl font-black font-mono text-white" id="allocCenterTotal">459 Pcs</span>
-            <span class="text-[10px] text-neon-cyan font-mono" id="allocCenterBuyer">H&M Order</span>
+            <span class="text-base font-black font-mono text-white" id="allocCenterTotal">459 Pcs</span>
+            <span class="text-[9px] text-neon-cyan font-mono" id="allocCenterBuyer">H&M Order</span>
           </div>
         </div>
-        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1 pt-1 border-t border-factory-border font-mono">
-          <span class="text-neon-cyan" id="allocDonePercent">● Completed: 23%</span>
-          <span class="text-slate-500" id="allocRemainPercent">● Remaining: 77%</span>
+        <div class="flex justify-between text-[9px] text-slate-400 font-mono mt-1 pt-0.5 border-t border-factory-border">
+          <span class="text-neon-cyan" id="allocDonePercent">● Done: 23%</span>
+          <span class="text-slate-500" id="allocRemainPercent">● Left: 77%</span>
         </div>
       </div>
 
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-factory-card/60 border border-factory-border/60 rounded-lg p-2.5 px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400 font-mono">
+    <footer class="bg-factory-card/60 border border-factory-border/60 rounded-lg p-2 px-3 flex flex-col sm:flex-row items-center justify-between gap-1 text-[11px] text-slate-400 font-mono">
       <div class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-neon-cyan animate-ping"></span>
-        <span id="footerLineText">MES-IoT Gateway Connected: Machine Line #17 Sensors Active</span>
+        <span id="footerLineText">MES-IoT Gateway Connected: Machine Line #17 Active</span>
       </div>
-      <div class="flex items-center gap-4 text-[11px]">
-        <span>Standard Allowed Minute (SAM): <strong>14.2 min</strong></span>
+      <div class="flex items-center gap-3 text-[10px]">
+        <span>SAM: <strong>14.2 min</strong></span>
         <span>•</span>
-        <span>Manpower: <strong>48 Operators + 6 Helpers</strong></span>
+        <span>Manpower: <strong>48 Ops + 6 Helpers</strong></span>
         <span>•</span>
         <span class="text-neon-cyan font-semibold">bitopibd.com</span>
       </div>
@@ -600,11 +611,44 @@
 
   </div>
 
-  <!-- JAVASCRIPT: SYNC, CHART & EXACT PARSING LOGIC -->
+  <!-- JAVASCRIPT: AUTO-RESIZER ENGINE & SHEET SYNC -->
   <script>
+    // 1. Dynamic Auto-Resizer Engine (Universal TV & Mobile Viewport Scale)
+    function autoScaleDashboard() {
+      const scaler = document.getElementById('dashboardScaler');
+      if (!scaler) return;
+
+      const isMobilePortrait = window.innerWidth <= 1024 && window.innerHeight > window.innerWidth;
+      if (isMobilePortrait) {
+        scaler.style.transform = 'none';
+        return;
+      }
+
+      const designWidth = 1920;
+      const designHeight = 1080;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      // Scale to fit screen perfectly without cutting or scrolling
+      const scaleX = windowWidth / designWidth;
+      const scaleY = windowHeight / designHeight;
+      const scale = Math.min(scaleX, scaleY);
+
+      scaler.style.transform = `scale(${scale})`;
+      
+      // Keep centered if aspect ratio differs slightly
+      const leftOffset = (windowWidth - (designWidth * scale)) / 2;
+      const topOffset = (windowHeight - (designHeight * scale)) / 2;
+      scaler.style.marginLeft = `${Math.max(0, leftOffset)}px`;
+      scaler.style.marginTop = `${Math.max(0, topOffset)}px`;
+    }
+
+    window.addEventListener('resize', autoScaleDashboard);
+    window.addEventListener('load', autoScaleDashboard);
+
+    // 2. Google Apps Script Endpoint
     const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWhjb4CN3HodVhggeb1mxo8ecKQ2_N19nAmBT2nZ_K9Y9CjuNgaJfsJ3dgEhn-hXxHNw/exec";
 
-    // 1. Live Clock & Date
     function updateClock() {
       const now = new Date();
       document.getElementById('liveClock').innerText = now.toLocaleTimeString('en-US', { hour12: true });
@@ -613,7 +657,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2. Line Switcher for 36 Lines
+    // Line Selector (1-36)
     const lineSelect = document.getElementById('lineSelect');
     const urlParams = new URLSearchParams(window.location.search);
     let currentLine = urlParams.get('line') || 'Line_17';
@@ -635,14 +679,12 @@
       fetchSheetData(currentLine);
     }
 
-    // Chart.js Instances
     let hourlyChartInstance = null;
     let defectChartInstance = null;
     let efficiencyChartInstance = null;
     let allocationChartInstance = null;
 
     function initCharts() {
-      // 1. Hourly Chart
       const ctxH = document.getElementById('hourlyChart').getContext('2d');
       hourlyChartInstance = new Chart(ctxH, {
         type: 'bar',
@@ -661,14 +703,14 @@
             },
             {
               type: 'bar',
-              label: 'Actual Achieved',
+              label: 'Actual',
               data: [28, 40, 37, null, null, null, null, null, null, null],
               backgroundColor: function(context) {
                 const val = context.raw;
                 if (val === null) return 'transparent';
                 return val >= 46 ? '#00E676' : (val >= 35 ? '#FFB300' : '#FF1744');
               },
-              borderRadius: 4
+              borderRadius: 3
             }
           ]
         },
@@ -677,62 +719,41 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 10 } } },
-            y: { min: 0, max: 60, grid: { color: 'rgba(31, 50, 101, 0.4)' }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 10 } } }
+            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 9 } } },
+            y: { min: 0, max: 60, grid: { color: 'rgba(31, 50, 101, 0.4)' }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 9 } } }
           }
         }
       });
 
-      // 2. Defect Donut
       const ctxD = document.getElementById('defectChart').getContext('2d');
       defectChartInstance = new Chart(ctxD, {
         type: 'doughnut',
         data: {
           labels: ['Puckering', 'Skip Stitch', 'Pleat'],
-          datasets: [{
-            data: [48, 32, 20],
-            backgroundColor: ['#FF1744', '#FFB300', '#00F0FF'],
-            borderColor: '#0D1733',
-            borderWidth: 3
-          }]
+          datasets: [{ data: [48, 32, 20], backgroundColor: ['#FF1744', '#FFB300', '#00F0FF'], borderColor: '#0D1733', borderWidth: 2 }]
         },
         options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } }
       });
 
-      // 3. Efficiency Gauge
       const ctxE = document.getElementById('efficiencyChart').getContext('2d');
       efficiencyChartInstance = new Chart(ctxE, {
         type: 'doughnut',
         data: {
-          datasets: [{
-            data: [64.5, 35.5],
-            backgroundColor: ['#00E676', '#14234E'],
-            borderColor: '#0D1733',
-            borderWidth: 2,
-            circumference: 240,
-            rotation: 240
-          }]
+          datasets: [{ data: [64.5, 35.5], backgroundColor: ['#00E676', '#14234E'], borderColor: '#0D1733', borderWidth: 2, circumference: 240, rotation: 240 }]
         },
         options: { responsive: true, maintainAspectRatio: false, cutout: '78%', plugins: { legend: { display: false } } }
       });
 
-      // 4. Allocation Donut
       const ctxA = document.getElementById('allocationChart').getContext('2d');
       allocationChartInstance = new Chart(ctxA, {
         type: 'doughnut',
         data: {
-          datasets: [{
-            data: [105, 354],
-            backgroundColor: ['#00F0FF', '#1F3265'],
-            borderColor: '#0D1733',
-            borderWidth: 3
-          }]
+          datasets: [{ data: [105, 354], backgroundColor: ['#00F0FF', '#1F3265'], borderColor: '#0D1733', borderWidth: 2 }]
         },
         options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false } } }
       });
     }
 
-    // Helper: Format Time string from Google Sheets
     function formatTimeVal(raw) {
       if (!raw || raw === "--") return "--";
       if (typeof raw === 'string' && raw.includes('T') && raw.includes('Z')) {
@@ -744,7 +765,6 @@
       return String(raw);
     }
 
-    // Helper: Percentage formatter
     function parsePercent(val) {
       if (typeof val === 'number') {
         return (val <= 1 ? (val * 100).toFixed(1) : val.toFixed(1)) + '%';
@@ -752,16 +772,13 @@
       return String(val).includes('%') ? val : (val ? val + '%' : '--%');
     }
 
-    // 3. Fetch from Google Apps Script
     async function fetchSheetData(line) {
       const badge = document.getElementById('syncBadge');
       const syncText = document.getElementById('syncText');
 
       try {
         syncText.textContent = "Syncing...";
-        const response = await fetch(`${API_ENDPOINT}?line=${line}&_t=${new Date().getTime()}`, {
-          cache: "no-store"
-        });
+        const response = await fetch(`${API_ENDPOINT}?line=${line}&_t=${new Date().getTime()}`, { cache: "no-store" });
         const result = await response.json();
 
         if (result.status === "success" && result.data) {
@@ -775,7 +792,6 @@
       }
     }
 
-    // 4. Exact Parser for the Beautiful Layout
     function parseAndRenderSheet(rows, lineName) {
       const lineNumStr = lineName.replace(/[^0-9]/g, '');
       const displayLine = "LINE " + (parseInt(lineNumStr, 10) || "17");
@@ -809,13 +825,11 @@
           if (val === "Last Day's Achievement" && row[c+1]) lastAchieved = Number(row[c+1]) || lastAchieved;
           if (val === "Last Day's Forecast" && row[c+1]) lastForecast = Number(row[c+1]) || lastForecast;
 
-          // Quality Metrics
           if (val === "DHU%") dhu = parsePercent(row[c+2] || row[c+1]);
           if (val === "DR%") dr = parsePercent(row[c+2] || row[c+1]);
           if (val === "NCR%") ncr = parsePercent(row[c+2] || row[c+1]);
           if (val === "BR%") br = parsePercent(row[c+2] || row[c+1]);
 
-          // Top Defects
           if (val === "1" && row[c+1] && String(row[c+1]).length > 2) def1 = "1. " + String(row[c+1]).toUpperCase();
           if (val === "2" && row[c+1] && String(row[c+1]).length > 2) def2 = "2. " + String(row[c+1]).toUpperCase();
           if (val === "3" && row[c+1] && String(row[c+1]).length > 2) def3 = "3. " + String(row[c+1]).toUpperCase();
@@ -823,7 +837,6 @@
           if (val.includes("Customer / Buyer Feedback") && row[c+1]) feedback = row[c+1];
         }
 
-        // Table Hour detection (1 to 10 strictly)
         const firstCol = String(row[0]).trim();
         if (/^[1-9]$|^10$/.test(firstCol) && hourlyRows.length < 10) {
           const hNum = parseInt(firstCol);
@@ -840,7 +853,6 @@
         }
       }
 
-      // Populate Top Cards
       document.getElementById('kpiRunDay').innerText = runDay;
       document.getElementById('kpiBuyer').innerText = buyer;
       document.getElementById('kpiStyle').innerText = style;
@@ -853,14 +865,12 @@
       document.getElementById('valLastAchieved').innerText = lastAchieved;
       document.getElementById('valLastForecast').innerText = lastForecast;
 
-      // Populate Quality
       document.getElementById('valDHU').innerText = dhu;
       document.getElementById('valDR').innerText = dr;
       document.getElementById('valNCR').innerText = ncr;
       document.getElementById('valBR').innerText = br;
       document.getElementById('chartDrText').innerText = `Total: ${dr} DR`;
 
-      // DR Alert styling trigger
       const drNum = parseFloat(dr) || 0;
       const boxDR = document.getElementById('boxDR');
       const valDREl = document.getElementById('valDR');
@@ -871,7 +881,7 @@
         boxDR.className = "bg-factory-900/90 border border-rose-500/40 rounded-lg p-2.5 flex flex-col justify-between";
         valDREl.className = "text-2xl font-black text-neon-rose font-mono neon-text-rose";
         barDR.className = "bg-neon-rose h-full rounded-full transition-all duration-500";
-        statusDR.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> +${(drNum - 3.0).toFixed(2)}% over limit!`;
+        statusDR.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Alert over limit`;
       } else {
         boxDR.className = "bg-factory-900/90 border border-emerald-500/40 rounded-lg p-2.5 flex flex-col justify-between";
         valDREl.className = "text-2xl font-black text-neon-green font-mono neon-text-green";
@@ -884,7 +894,6 @@
       document.getElementById('defectName3').innerText = def3;
       if (feedback) document.getElementById('buyerFeedbackText').innerText = `"${feedback}"`;
 
-      // Fallback for default mock rows if empty
       if (hourlyRows.length === 0) {
         hourlyRows = [
           { hour: '01', target: 46, actual: 28, diff: -18, issue: 'Supervisor Poor Follow-up', action: 'Talk to Supervisor for increase prod', who: 'DPM', time: '08:30 AM' },
@@ -949,36 +958,33 @@
         const tr = document.createElement('tr');
         tr.className = isLogged ? 'hover:bg-factory-800/40 transition' : 'opacity-40 hover:opacity-100 transition';
         tr.innerHTML = `
-          <td class="py-2 px-3 text-center font-mono font-bold text-neon-cyan">${item.hour}</td>
-          <td class="py-2 px-3 text-center font-mono text-slate-400">${item.target}</td>
-          <td class="py-2 px-3 text-center">
-            <span class="font-mono font-bold text-sm ${valColor} px-2 py-0.5 rounded ${valBg}">${isLogged ? item.actual : '--'}</span>
+          <td class="py-1.5 px-2 text-center font-mono font-bold text-neon-cyan">${item.hour}</td>
+          <td class="py-1.5 px-2 text-center font-mono text-slate-400">${item.target}</td>
+          <td class="py-1.5 px-2 text-center">
+            <span class="font-mono font-bold text-xs ${valColor} px-1.5 py-0.5 rounded ${valBg}">${isLogged ? item.actual : '--'}</span>
           </td>
-          <td class="py-2 px-3 text-center font-mono font-bold text-white">${isLogged ? cumulative : '--'}</td>
-          <td class="py-2 px-3 text-center">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${badgeText}</span>
+          <td class="py-1.5 px-2 text-center font-mono font-bold text-white">${isLogged ? cumulative : '--'}</td>
+          <td class="py-1.5 px-2 text-center">
+            <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold ${badgeClass}">${badgeText}</span>
           </td>
-          <td class="py-2 px-3 ${item.issue !== '--' ? 'text-amber-300 font-medium' : 'text-slate-500'}">${item.issue}</td>
-          <td class="py-2 px-3 text-slate-300">${item.action}</td>
-          <td class="py-2 px-3 text-center font-bold text-neon-cyan font-mono">${item.who}</td>
-          <td class="py-2 px-3 text-center font-mono text-slate-300">${item.time}</td>
+          <td class="py-1.5 px-2 ${item.issue !== '--' ? 'text-amber-300 font-medium' : 'text-slate-500'} text-[11px]">${item.issue}</td>
+          <td class="py-1.5 px-2 text-slate-300 text-[11px]">${item.action}</td>
+          <td class="py-1.5 px-2 text-center font-bold text-neon-cyan font-mono">${item.who}</td>
+          <td class="py-1.5 px-2 text-center font-mono text-slate-300">${item.time}</td>
         `;
         tbody.appendChild(tr);
       });
 
-      // Update Aggregates
       document.getElementById('shiftTotalHeader').innerText = cumulative;
       document.getElementById('valCumulativeSum').innerText = cumulative;
       const pct = ((cumulative / (todayTgt || 459)) * 100).toFixed(1);
       document.getElementById('valTargetPercent').innerText = pct + '%';
 
-      // Update Allocation Tile & Chart
       document.getElementById('allocCenterTotal').innerText = `${todayTgt} Pcs`;
       document.getElementById('allocCenterBuyer').innerText = `${buyer} Order`;
-      document.getElementById('allocDonePercent').innerText = `● Completed: ${Math.round(pct)}%`;
-      document.getElementById('allocRemainPercent').innerText = `● Remaining: ${Math.max(0, 100 - Math.round(pct))}%`;
+      document.getElementById('allocDonePercent').innerText = `● Done: ${Math.round(pct)}%`;
+      document.getElementById('allocRemainPercent').innerText = `● Left: ${Math.max(0, 100 - Math.round(pct))}%`;
 
-      // Update Charts
       if (hourlyChartInstance) {
         hourlyChartInstance.data.datasets[0].data = targetsForChart;
         hourlyChartInstance.data.datasets[1].data = actualsForChart;
@@ -999,7 +1005,6 @@
       }
     }
 
-    // 5. 60-Second Visible Countdown
     let countdownSec = 60;
     const timerElem = document.getElementById('countdownTimer');
 
@@ -1017,7 +1022,6 @@
       timerElem.textContent = `${countdownSec < 10 ? '0' + countdownSec : countdownSec}s`;
     }, 1000);
 
-    // Initial Load
     initCharts();
     fetchSheetData(currentLine);
   </script>
